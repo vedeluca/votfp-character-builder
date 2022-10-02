@@ -1,13 +1,61 @@
-const characterSheet = new CharacterSheet();
+DICE_CHAIN = [0, 4, 6, 8, 10, 12];
+const CHARACTER_SHEET = PropertiesService.getUserProperties();
+CHARACTER_SHEET.setProperty("AGILITY_DIE", "1");
+CHARACTER_SHEET.setProperty("AGILITY_MOD", "0");
+CHARACTER_SHEET.setProperty("SMARTS_DIE", "1");
+CHARACTER_SHEET.setProperty("SMARTS_MOD", "0");
+CHARACTER_SHEET.setProperty("SPIRIT_DIE", "1");
+CHARACTER_SHEET.setProperty("SPIRIT_MOD", "0");
+CHARACTER_SHEET.setProperty("STRENGTH_DIE", "1");
+CHARACTER_SHEET.setProperty("STRENGTH_MOD", "0");
+CHARACTER_SHEET.setProperty("VIGOR_DIE", "1");
+CHARACTER_SHEET.setProperty("VIGOR_MOD", "0");
+CHARACTER_SHEET.setProperty("ATTRIBUTES_POINTS", "5");
+CHARACTER_SHEET.setProperty("ATHLETICS_DIE", "1");
+CHARACTER_SHEET.setProperty("ATHLETICS_MOD", "0");
+CHARACTER_SHEET.setProperty("COMMON_KNOWLEDGE_DIE", "1");
+CHARACTER_SHEET.setProperty("COMMON_KNOWLEDGE_MOD", "0");
+CHARACTER_SHEET.setProperty("FIGHTING_DIE", "0");
+CHARACTER_SHEET.setProperty("FIGHTING_MOD", "0");
+CHARACTER_SHEET.setProperty("LANGUAGE_COMMON_DIE", "3");
+CHARACTER_SHEET.setProperty("LANGUAGE_COMMON_MOD", "0");
+CHARACTER_SHEET.setProperty("NOTICE_DIE", "1");
+CHARACTER_SHEET.setProperty("NOTICE_MOD", "0");
+CHARACTER_SHEET.setProperty("PERSUASION_DIE", "1");
+CHARACTER_SHEET.setProperty("PERSUASION_MOD", "0");
+CHARACTER_SHEET.setProperty("STEALTH_DIE", "1");
+CHARACTER_SHEET.setProperty("STEALTH_MOD", "0");
+CHARACTER_SHEET.setProperty("SKILLS_POINTS", "12");
+CHARACTER_SHEET.setProperty("PACE", "6");
+CHARACTER_SHEET.setProperty("PARRY", "2");
+CHARACTER_SHEET.setProperty("TOUGHNESS", "4");
+CHARACTER_SHEET.setProperty("ARMOR", "0");
 
-function TOUGHNESS() {
-  return characterSheet.toughness;
+function GET_VALUE(key){
+	return CHARACTER_SHEET.getProperty(key);
+}
+
+function GET_DICE(key){
+	const val = parseInt(CHARACTER_SHEET.getProperty(`${key}_DIE`));
+	const die = `d${DICE_CHAIN[val]}`;
+	const mod = CHARACTER_SHEET.getProperty(`${key}_MOD`);
+	return (mod == "0") ? die : `${die} + ${mod}`
+}
+
+function GET_TOUGHNESS(){
+	const vigor = parseInt(CHARACTER_SHEET.getProperty("VIGOR_DIE"));
+	const armor = parseInt(CHARACTER_SHEET.getProperty("ARMOR"));
+	const halfVigor =DICE_CHAIN[vigor]/2;
+	return 2 + halfVigor + armor;
+}
+
+function SET_VALUE(key, val){
+	CHARACTER_SHEET.setProperty(key, val);
 }
 
 class CharacterSheet{
-	static DICE_CHAIN = [4, 6, 8, 10, 12];
-	
 	constructor(){
+		CharacterSheet.DICE_CHAIN = [4, 6, 8, 10, 12];
 		this._attributes = new Attributes();
 		this._pace = 6;
 		this._armor = 0;
@@ -78,7 +126,7 @@ class Attributes{
 	increaseSmartsMod(i = 1){
 		this._smarts.increaseMod(i);
 	}
-	decreaseSmarts|smartsMod(i = 1){
+	decreaseSmartsMod(i = 1){
 		this._smarts.decreaseMod(i);
 	}
 	get spiritDie(){
