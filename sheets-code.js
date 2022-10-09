@@ -59,6 +59,15 @@ function GET_VIGOR(die, mod) {
 	return getDice(die, mod, 0, "d4");
 }
 
+function GET_ATTRIBUTE_POINTS(agility, smarts, spirit, strength, vigor) {
+	const agilityPts = DICE_ARR.indexOf(agility) - 1;
+	const smartsPts = DICE_ARR.indexOf(smarts) - 1;
+	const spiritPts = DICE_ARR.indexOf(spirit) - 1;
+	const strengthPts = DICE_ARR.indexOf(strength) - 1;
+	const vigorPts = DICE_ARR.indexOf(vigor) - 1;
+	return 5 - agilityPts - smartsPts - spiritPts - strengthPts - vigorPts;
+}
+
 function getDice(die, mod, bonus, min) {
 	let index = DICE_ARR.indexOf(die) + bonus;
 	if (index < min)
