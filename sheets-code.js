@@ -8,6 +8,7 @@ DICE_OBJ = {
 };
 
 DICE_ARR = ["-", "d4", "d6", "d8", "d10", "d12"];
+ATTR_ARR = ["Agility", "Smarts", "Spirit", "Strength", "Vigor"];
 
 BABIROG = "Babirog";
 HUMAN = "Human";
@@ -68,14 +69,25 @@ function GET_ATTRIBUTE_POINTS(agility, smarts, spirit, strength, vigor) {
     return 5 - agilityPts - smartsPts - spiritPts - strengthPts - vigorPts;
 }
 
-//TODO: this doesn't work, cause each skill is dependent on an attribute
-function GET_SKILL_POINTS(skills) {
-    let pts = 12;
-    for (skill in skills) {
-        let minus = DICE_ARR.indexOf(skill) - 1;
+// TODO: get the total from attributes, not the initial die
+function GET_SKILL_POINTS(skills, linked, attributes, smarts) {
+    let pts = 20; // 12 + 8 for starting skills
+    for (let i = 0; i < skills.length; i++) {
+        const skill = skills[i].toString();
+        const link = linked[i].toString();
+        const j = ATTR_ARR.indexOf(link);
+        const attr = attributes[j].toString();
+        const skillVal = DICE_ARR.indexOf(skill);
+        const attrVal = DICE_ARR.indexOf(attr);
+        let minus = skillVal;
+        if (skillVal > attrVal)
+            minus += skillVal - attrVal;
         pts -= minus;
     }
-    pts += 8; //for starting skills
+    // adjust for common language
+    const smartsVal = DICE_ARR.indexOf(smarts.toString());
+    if (3 > smartsVal)
+        pts += 3 - smartsVal;
     return pts;
 }
 
