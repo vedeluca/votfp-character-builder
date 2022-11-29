@@ -110,12 +110,26 @@ function GET_SKILL_POINTS(skills, linked, attributes, smarts) {
     return pts;
 }
 
-function GET_SKILL_DIE(die, race, min) {
+function GET_SKILL_DIE(die, min) {
     return getDice(die, 0, min);
 }
 
 function GET_SKILL_MOD(mod) {
     return getMod(mod, 0);
+}
+
+function GET_STEALTH_DIE(die, race) {
+    const bonus = (race == SQUIBBEL) ? 1 : 0;
+    return getDice(die, bonus, "d4");
+}
+
+function GET_NOTICE_MOD(mod, race) {
+    let bonus = 0;
+    if (race == SQUIBBEL)
+        bonus = 2;
+    if (race == BABIROG)
+        bonus = 1;
+    return getMod(mod, bonus);
 }
 
 function getDice(die, bonus, min) {
