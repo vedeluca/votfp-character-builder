@@ -40,24 +40,44 @@ function GET_TOUGHNESS(vigor, armor, race, size) {
     return `${total}(${armor})`;
 }
 
-function GET_AGILITY(die, mod) {
-    return getDice(die, mod, 0, "d4");
+function GET_AGILITY_DIE(die) {
+    return getDice(die, 0, "d4");
 }
 
-function GET_SMARTS(die, mod) {
-    return getDice(die, mod, 0, "d4");
+function GET_SMARTS_DIE(die) {
+    return getDice(die, 0, "d4");
 }
 
-function GET_SPIRIT(die, mod) {
-    return getDice(die, mod, 0, "d4");
+function GET_SPIRIT_DIE(die) {
+    return getDice(die, 0, "d4");
 }
 
-function GET_STRENGTH(die, mod) {
-    return getDice(die, mod, 0, "d4");
+function GET_STRENGTH_DIE(die) {
+    return getDice(die, 0, "d4");
 }
 
-function GET_VIGOR(die, mod) {
-    return getDice(die, mod, 0, "d4");
+function GET_VIGOR_DIE(die) {
+    return getDice(die, 0, "d4");
+}
+
+function GET_AGILITY_MOD(mod) {
+    return getMod(mod, 0);
+}
+
+function GET_SMARTS_MOD(mod) {
+    return getMod(mod, 0);
+}
+
+function GET_SPIRIT_MOD(mod) {
+    return getMod(mod, 0);
+}
+
+function GET_STRENGTH_MOD(mod) {
+    return getMod(mod, 0);
+}
+
+function GET_VIGOR_MOD(mod) {
+    return getMod(mod, 0);
 }
 
 function GET_ATTRIBUTE_POINTS(agility, smarts, spirit, strength, vigor) {
@@ -69,7 +89,6 @@ function GET_ATTRIBUTE_POINTS(agility, smarts, spirit, strength, vigor) {
     return 5 - agilityPts - smartsPts - spiritPts - strengthPts - vigorPts;
 }
 
-// TODO: get the total from attributes, not the initial die
 function GET_SKILL_POINTS(skills, linked, attributes, smarts) {
     let pts = 20; // 12 + 8 for starting skills
     for (let i = 0; i < skills.length; i++) {
@@ -91,17 +110,25 @@ function GET_SKILL_POINTS(skills, linked, attributes, smarts) {
     return pts;
 }
 
-function GET_SKILL(die, mod) {
-    return getDice(die, mod, 0, "-");
+function GET_SKILL_DIE(die, race, min) {
+    return getDice(die, 0, min);
 }
 
-function getDice(die, mod, bonus, min) {
+function GET_SKILL_MOD(mod) {
+    return getMod(mod, 0);
+}
+
+function getDice(die, bonus, min) {
     let index = DICE_ARR.indexOf(die) + bonus;
     if (index < min)
         index = min;
     if (index > 5)
         index = 5;
-    if (mod)
-        return `${DICE_ARR[index]} + ${mod}`;
     return DICE_ARR[index];
+}
+
+function getMod(mod, bonus) {
+    if (mod == 0 && bonus == 0)
+        return;
+    return mod + bonus;
 }
