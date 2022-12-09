@@ -7,6 +7,7 @@ DICE_OBJ = {
     "d12": 12
 };
 
+D4 = "d4";
 DICE_ARR = ["-", "d4", "d6", "d8", "d10", "d12"];
 ATTR_ARR = ["Agility", "Smarts", "Spirit", "Strength", "Vigor"];
 
@@ -16,6 +17,7 @@ MONODO = "Monodo";
 SQUIBBEL = "Squibbel";
 TOADYBOG = "Toadybog";
 
+SMALL = "Small";
 
 function GET_SIZE(race) {
     let size = 0;
@@ -41,23 +43,23 @@ function GET_TOUGHNESS(vigor, armor, race, size) {
 }
 
 function GET_AGILITY_DIE(die) {
-    return getDice(die, 0, "d4");
+    return getDice(die, 0, D4);
 }
 
 function GET_SMARTS_DIE(die) {
-    return getDice(die, 0, "d4");
+    return getDice(die, 0, D4);
 }
 
 function GET_SPIRIT_DIE(die) {
-    return getDice(die, 0, "d4");
+    return getDice(die, 0, D4);
 }
 
 function GET_STRENGTH_DIE(die) {
-    return getDice(die, 0, "d4");
+    return getDice(die, 0, D4);
 }
 
 function GET_VIGOR_DIE(die) {
-    return getDice(die, 0, "d4");
+    return getDice(die, 0, D4);
 }
 
 function GET_AGILITY_MOD(mod) {
@@ -120,7 +122,7 @@ function GET_SKILL_MOD(mod) {
 
 function GET_STEALTH_DIE(die, race) {
     const bonus = (race == SQUIBBEL) ? 1 : 0;
-    return getDice(die, bonus, "d4");
+    return getDice(die, bonus, D4);
 }
 
 function GET_NOTICE_MOD(mod, race) {
@@ -130,6 +132,10 @@ function GET_NOTICE_MOD(mod, race) {
     if (race == BABIROG)
         bonus = 1;
     return getMod(mod, bonus);
+}
+
+function GET_RACIAL_HINDRANCE(race) {
+    return ([SQUIBBEL, TOADYBOG].includes(race)) ? SMALL : "-";
 }
 
 function getDice(die, bonus, min) {
