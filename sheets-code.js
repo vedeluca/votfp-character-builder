@@ -17,17 +17,43 @@ MONODO = "Monodo";
 SQUIBBEL = "Squibbel";
 TOADYBOG = "Toadybog";
 
+CLUELESS = "Clueless";
+CLUMSY = "Clumsy";
+ELDERLY = "Elderly";
+OBESE = "Obese";
+SLOW = "Slow";
 SMALL = "Small";
+UGLY = "Ugly";
+YELLOW = "Yellow";
+YOUNG = "Young";
+MIN_MAJ_OBJ = {
+    "Minor": 1,
+    "Major": 2
+}
 
-function GET_SIZE(race) {
+function GET_SIZE(hindrances) {
     let size = 0;
-    if ([SQUIBBEL, TOADYBOG].includes(race))
-        size--;
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        if (hindrance === SMALL)
+            size--;
+        if (hindrance === OBESE)
+            size++;
+    }
     return size;
 }
 
-function GET_PACE() {
-    return 6;
+function GET_PACE(hindrances, minMajs) {
+    let pace = 6;
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        const minMaj = minMajs[i].toString();
+        if ([ELDERLY, OBESE].includes(hindrance))
+            pace -= 1;
+        if (hindrance === SLOW)
+            pace -= MIN_MAJ_OBJ[minMaj];
+    }
+    return pace;
 }
 
 function GET_PARRY(fighting) {
@@ -62,7 +88,12 @@ function GET_VIGOR_DIE(die) {
     return getDice(die, 0, D4);
 }
 
-function GET_AGILITY_MOD(mod) {
+function GET_AGILITY_MOD(mod, hindrances) {
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        if (hindrance === ELDERLY)
+            return getMod(mod, -1);
+    }
     return getMod(mod, 0);
 }
 
@@ -74,11 +105,21 @@ function GET_SPIRIT_MOD(mod) {
     return getMod(mod, 0);
 }
 
-function GET_STRENGTH_MOD(mod) {
+function GET_STRENGTH_MOD(mod, hindrances) {
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        if (hindrance === ELDERLY)
+            return getMod(mod, -1);
+    }
     return getMod(mod, 0);
 }
 
-function GET_VIGOR_MOD(mod) {
+function GET_VIGOR_MOD(mod, hindrances) {
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        if (hindrance === ELDERLY)
+            return getMod(mod, -1);
+    }
     return getMod(mod, 0);
 }
 
