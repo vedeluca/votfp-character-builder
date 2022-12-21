@@ -27,8 +27,8 @@ UGLY = "Ugly";
 YELLOW = "Yellow";
 YOUNG = "Young";
 MIN_MAJ_OBJ = {
-    "Minor": 1,
-    "Major": 2
+    "Minor": -1,
+    "Major": -2
 }
 
 function GET_SIZE(hindrances) {
@@ -51,7 +51,7 @@ function GET_PACE(hindrances, minMajs) {
         if ([ELDERLY, OBESE].includes(hindrance))
             pace -= 1;
         if (hindrance === SLOW)
-            pace -= MIN_MAJ_OBJ[minMaj];
+            pace += MIN_MAJ_OBJ[minMaj];
     }
     return pace;
 }
@@ -166,13 +166,57 @@ function GET_STEALTH_DIE(die, race) {
     return getDice(die, bonus, D4);
 }
 
-function GET_NOTICE_MOD(mod, race) {
+function GET_STEALTH_MOD(mod, hindrances) {
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        if (hindrance === CLUMSY)
+            return getMod(mod, -2);
+    }
+    return getMod(mod, 0);
+}
+
+function GET_NOTICE_MOD(mod, race, hindrances) {
     let bonus = 0;
     if (race == SQUIBBEL)
         bonus = 2;
     if (race == BABIROG)
         bonus = 1;
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        if (hindrance === CLUELESS) {
+            bonus--;
+            return getMod(mod, bonus);
+        }
+    }
     return getMod(mod, bonus);
+}
+
+function GET_COMMON_KNOW_MOD(mod, hindrances) {
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        if (hindrance === CLUELESS)
+            return getMod(mod, -1);
+    }
+    return getMod(mod, 0);
+}
+
+function GET_ATHLETICS_MOD(mod, hindrances) {
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        if (hindrance === CLUMSY)
+            return getMod(mod, -2);
+    }
+    return getMod(mod, 0);
+}
+
+function GET_PERSUASION_MOD(mod, hindrances, minMajs) {
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        const minMaj = minMajs[i].toString();
+        if (hindrance === UGLY)
+            return getMod(mod, MIN_MAJ_OBJ[minMaj]);
+    }
+    return getMod(mod, 0);
 }
 
 function GET_RACIAL_HINDRANCE(race) {
