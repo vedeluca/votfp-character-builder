@@ -8,6 +8,7 @@ DICE_OBJ = {
 };
 
 D4 = "d4";
+D6 = "d6";
 DICE_ARR = ["-", "d4", "d6", "d8", "d10", "d12"];
 ATTR_ARR = ["Agility", "Smarts", "Spirit", "Strength", "Vigor"];
 
@@ -236,10 +237,31 @@ function GET_RACIAL_HINDRANCE(race) {
     return ([SQUIBBEL, TOADYBOG].includes(race)) ? SMALL : "-";
 }
 
+function GET_RUNNING_DIE(hindrances) {
+    let bonus = 0;
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        if ([SLOW, OBESE].includes(hindrance))
+            bonus--;
+    }
+    return getDice(D6, bonus, D4);
+}
+
+function GET_RUNNING_MOD(hindrances) {
+    let bonus = 0;
+    for (let i = 0; i < hindrances.length; i++) {
+        const hindrance = hindrances[i].toString();
+        if (hindrance === ELDERLY)
+            bonus--;
+    }
+    return getMod(0, bonus);
+}
+
 function getDice(die, bonus, min) {
     let index = DICE_ARR.indexOf(die) + bonus;
-    if (index < min)
-        index = min;
+    const minIndex = DICE_ARR.indexOf(min);
+    if (index < minIndex)
+        index = minIndex;
     if (index > 5)
         index = 5;
     return DICE_ARR[index];
