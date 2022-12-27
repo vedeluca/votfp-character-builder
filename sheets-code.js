@@ -39,6 +39,10 @@ SPEND_OBJ = {
     "Skill Point": 1,
     "1000 non": 1
 }
+ATTRIBUTE_POINT = "Attribute Point";
+EDGE_POINT = "Edge Point";
+SKILL_POINT = "Skill Point";
+ONE_THOUSAND_NON = "1000 non";
 
 function GET_SIZE(hindrances) {
     let size = 0;
@@ -124,17 +128,21 @@ function GET_VIGOR_MOD(mod, hindrances) {
     return getMod(mod, 0);
 }
 
-function GET_ATTRIBUTE_POINTS(agility, smarts, spirit, strength, vigor, hindrances) {
+function GET_ATTRIBUTE_POINTS(attributeDice, attributeMods, hindrances, spends) {
     let pts = 5;
     const hindranceArr = cellsToArray(hindrances);
     if (hindranceArr.includes(YOUNG))
         pts = 4;
-    const agilityPts = DICE_ARR.indexOf(agility) - 1;
-    const smartsPts = DICE_ARR.indexOf(smarts) - 1;
-    const spiritPts = DICE_ARR.indexOf(spirit) - 1;
-    const strengthPts = DICE_ARR.indexOf(strength) - 1;
-    const vigorPts = DICE_ARR.indexOf(vigor) - 1;
-    return pts - agilityPts - smartsPts - spiritPts - strengthPts - vigorPts;
+    const diceArray = cellsToArray(attributeDice);
+    for (die of diceArray)
+        pts -= DICE_ARR.indexOf(die) - 1;
+    pts -= sumCells(attributeMods);
+    const spendArr = cellsToArray(spends);
+    for (spend of spendArr) {
+        if (spend === ATTRIBUTE_POINT)
+            pts++;
+    }
+    return pts;
 }
 
 function GET_SKILL_POINTS(skills, linked, attributes, smarts, hindrances) {
@@ -275,4 +283,14 @@ function cellsToArray(cells) {
     for (let i = 0; i < cells.length; i++)
         arr.push(cells[i].toString());
     return arr;
+}
+
+function sumCells(cells) {
+    let sum = 0;
+    for (let i = 0; i < cells.length; i++) {
+        const cell = parseInt(cells[i]);
+        if (!isNaN(cell))
+            sum += cell;
+    }
+    return sum;
 }
