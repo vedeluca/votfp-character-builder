@@ -28,19 +28,25 @@ UGLY = "Ugly";
 YELLOW = "Yellow";
 YOUNG = "Young";
 MIN_MAJ_OBJ = {
-    "Minor": -1,
-    "Major": -2
+    "-": 0,
+    "Minor": 1,
+    "Major": 2
+}
+SPEND_OBJ = {
+    "-": 0,
+    "Attribute Point": 2,
+    "Edge Point": 2,
+    "Skill Point": 1,
+    "1000 non": 1
 }
 
 function GET_SIZE(hindrances) {
     let size = 0;
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === SMALL)
-            size--;
-        if (hindrance === OBESE)
-            size++;
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(SMALL))
+        size--;
+    if (hindranceArr.includes(OBESE))
+        size++;
     return size;
 }
 
@@ -52,7 +58,7 @@ function GET_PACE(hindrances, minMajs) {
         if ([ELDERLY, OBESE].includes(hindrance))
             pace -= 1;
         if (hindrance === SLOW)
-            pace += MIN_MAJ_OBJ[minMaj];
+            pace -= MIN_MAJ_OBJ[minMaj];
     }
     return pace;
 }
@@ -90,11 +96,9 @@ function GET_VIGOR_DIE(die) {
 }
 
 function GET_AGILITY_MOD(mod, hindrances) {
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === ELDERLY)
-            return getMod(mod, -1);
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(ELDERLY))
+        return getMod(mod, -1);
     return getMod(mod, 0);
 }
 
@@ -107,30 +111,24 @@ function GET_SPIRIT_MOD(mod) {
 }
 
 function GET_STRENGTH_MOD(mod, hindrances) {
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === ELDERLY)
-            return getMod(mod, -1);
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(ELDERLY))
+        return getMod(mod, -1);
     return getMod(mod, 0);
 }
 
 function GET_VIGOR_MOD(mod, hindrances) {
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === ELDERLY)
-            return getMod(mod, -1);
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(ELDERLY))
+        return getMod(mod, -1);
     return getMod(mod, 0);
 }
 
 function GET_ATTRIBUTE_POINTS(agility, smarts, spirit, strength, vigor, hindrances) {
     let pts = 5;
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === YOUNG)
-            pts = 4;
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(YOUNG))
+        pts = 4;
     const agilityPts = DICE_ARR.indexOf(agility) - 1;
     const smartsPts = DICE_ARR.indexOf(smarts) - 1;
     const spiritPts = DICE_ARR.indexOf(spirit) - 1;
@@ -141,13 +139,11 @@ function GET_ATTRIBUTE_POINTS(agility, smarts, spirit, strength, vigor, hindranc
 
 function GET_SKILL_POINTS(skills, linked, attributes, smarts, hindrances) {
     let pts = 20; // 12 + 8 for starting skills
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === YOUNG)
-            pts = 18; // 10 + 8 for starting skills
-        if (hindrance === ELDERLY)
-            pts = 25 // 12 + 8 for starting skills + 5 to be used for smarts based skills
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(YOUNG))
+        pts = 18; // 10 + 8 for starting skills
+    if (hindranceArr.includes(ELDERLY))
+        pts = 25 // 12 + 8 for starting skills + 5 to be used for smarts based skills
     for (let i = 0; i < skills.length; i++) {
         const skill = skills[i].toString();
         const link = linked[i].toString();
@@ -181,11 +177,9 @@ function GET_STEALTH_DIE(die, race) {
 }
 
 function GET_STEALTH_MOD(mod, hindrances) {
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === CLUMSY)
-            return getMod(mod, -2);
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(CLUMSY))
+        return getMod(mod, -2);
     return getMod(mod, 0);
 }
 
@@ -195,31 +189,25 @@ function GET_NOTICE_MOD(mod, race, hindrances) {
         bonus = 2;
     if (race == BABIROG)
         bonus = 1;
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === CLUELESS) {
-            bonus--;
-            return getMod(mod, bonus);
-        }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(CLUELESS)) {
+        bonus--;
+        return getMod(mod, bonus);
     }
     return getMod(mod, bonus);
 }
 
 function GET_COMMON_KNOW_MOD(mod, hindrances) {
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === CLUELESS)
-            return getMod(mod, -1);
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(CLUELESS))
+        return getMod(mod, -1);
     return getMod(mod, 0);
 }
 
 function GET_ATHLETICS_MOD(mod, hindrances) {
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === CLUMSY)
-            return getMod(mod, -2);
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(CLUMSY))
+        return getMod(mod, -2);
     return getMod(mod, 0);
 }
 
@@ -228,7 +216,7 @@ function GET_PERSUASION_MOD(mod, hindrances, minMajs) {
         const hindrance = hindrances[i].toString();
         const minMaj = minMajs[i].toString();
         if (hindrance === UGLY)
-            return getMod(mod, MIN_MAJ_OBJ[minMaj]);
+            return getMod(mod, -MIN_MAJ_OBJ[minMaj]);
     }
     return getMod(mod, 0);
 }
@@ -239,22 +227,31 @@ function GET_RACIAL_HINDRANCE(race) {
 
 function GET_RUNNING_DIE(hindrances) {
     let bonus = 0;
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if ([SLOW, OBESE].includes(hindrance))
-            bonus--;
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(SLOW))
+        bonus--;
+    if (hindranceArr.includes(OBESE))
+        bonus--;
     return getDice(D6, bonus, D4);
 }
 
 function GET_RUNNING_MOD(hindrances) {
     let bonus = 0;
-    for (let i = 0; i < hindrances.length; i++) {
-        const hindrance = hindrances[i].toString();
-        if (hindrance === ELDERLY)
-            bonus--;
-    }
+    const hindranceArr = cellsToArray(hindrances);
+    if (hindranceArr.includes(ELDERLY))
+        bonus--;
     return getMod(0, bonus);
+}
+
+function GET_HINDRANCE_POINTS(minMajs, spends) {
+    let pts = 0;
+    const minMajArray = cellsToArray(minMajs);
+    for (minMaj of minMajArray)
+        pts += MIN_MAJ_OBJ[minMaj];
+    const spendsArray = cellsToArray(spends);
+    for (spend of spendsArray)
+        pts -= SPEND_OBJ[spend];
+    return pts;
 }
 
 function getDice(die, bonus, min) {
@@ -271,4 +268,11 @@ function getMod(mod, bonus) {
     if (mod == 0 && bonus == 0)
         return;
     return mod + bonus;
+}
+
+function cellsToArray(cells) {
+    const arr = [];
+    for (let i = 0; i < cells.length; i++)
+        arr.push(cells[i].toString());
+    return arr;
 }
