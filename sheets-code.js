@@ -268,6 +268,16 @@ function GET_HINDRANCE_POINTS(minMajs, spends) {
     return pts;
 }
 
+function GET_NON(spends) {
+    let non = 500;
+    const spendArr = cellsToArray(spends);
+    for (spend of spendArr) {
+        if (spend === ONE_THOUSAND_NON)
+            non+= 1000;
+    }
+    return non;
+}
+
 function getDice(die, bonus, min) {
     let index = DICE_ARR.indexOf(die) + bonus;
     const minIndex = DICE_ARR.indexOf(min);
