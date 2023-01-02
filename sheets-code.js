@@ -145,24 +145,30 @@ function GET_ATTRIBUTE_POINTS(attributeDice, attributeMods, hindrances, spends) 
     return pts;
 }
 
-function GET_SKILL_POINTS(skills, linked, attributes, smarts, hindrances) {
+function GET_SKILL_POINTS(skillDice, skillMods, linked, attributes, smarts, hindrances, spends) {
     let pts = 20; // 12 + 8 for starting skills
     const hindranceArr = cellsToArray(hindrances);
     if (hindranceArr.includes(YOUNG))
         pts = 18; // 10 + 8 for starting skills
     if (hindranceArr.includes(ELDERLY))
         pts = 25 // 12 + 8 for starting skills + 5 to be used for smarts based skills
-    for (let i = 0; i < skills.length; i++) {
-        const skill = skills[i].toString();
+    for (let i = 0; i < skillDice.length; i++) {
+        const die = skillDice[i].toString();
         const link = linked[i].toString();
         const j = ATTR_ARR.indexOf(link);
         const attr = attributes[j].toString();
-        const skillVal = DICE_ARR.indexOf(skill);
+        const skillVal = DICE_ARR.indexOf(die);
         const attrVal = DICE_ARR.indexOf(attr);
         let minus = skillVal;
         if (skillVal > attrVal)
             minus += skillVal - attrVal;
         pts -= minus;
+    }
+    pts -= sumCells(skillMods);
+    const spendArr = cellsToArray(spends);
+    for (spend of spendArr) {
+        if (spend === SKILL_POINT)
+            pts++;
     }
     // adjust for common language
     const smartsVal = DICE_ARR.indexOf(smarts.toString());
