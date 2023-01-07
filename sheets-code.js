@@ -1,3 +1,5 @@
+BLANK = "-";
+
 DICE_OBJ = {
     "-": 0,
     "d4": 4,
@@ -74,7 +76,7 @@ function GET_PARRY(fighting) {
 function GET_TOUGHNESS(vigor, armor, race, size) {
     const halfVigor = DICE_OBJ[vigor] / 2;
     let total = 2 + halfVigor + parseInt(armor) + parseInt(size);
-    if (race == MONODO)
+    if (race === MONODO)
         total++;
     return `${total}(${armor})`;
 }
@@ -186,7 +188,7 @@ function GET_SKILL_MOD(mod) {
 }
 
 function GET_STEALTH_DIE(die, race) {
-    const bonus = (race == SQUIBBEL) ? 1 : 0;
+    const bonus = (race === SQUIBBEL) ? 1 : 0;
     return getDice(die, bonus, D4);
 }
 
@@ -199,9 +201,9 @@ function GET_STEALTH_MOD(mod, hindrances) {
 
 function GET_NOTICE_MOD(mod, race, hindrances) {
     let bonus = 0;
-    if (race == SQUIBBEL)
+    if (race === SQUIBBEL)
         bonus = 2;
-    if (race == BABIROG)
+    if (race === BABIROG)
         bonus = 1;
     const hindranceArr = cellsToArray(hindrances);
     if (hindranceArr.includes(CLUELESS)) {
@@ -273,9 +275,26 @@ function GET_NON(spends) {
     const spendArr = cellsToArray(spends);
     for (spend of spendArr) {
         if (spend === ONE_THOUSAND_NON)
-            non+= 1000;
+            non += 1000;
     }
     return non;
+}
+
+function GET_EDGE_POINTS(race, spends, edges) {
+    let pts = 0;
+    if (race === HUMAN)
+        pts++;
+    const spendArr = cellsToArray(spends);
+    for (spend of spendArr) {
+        if (spend === EDGE_POINT)
+            pts++;
+    }
+    const edgeArr = cellsToArray(edges);
+    for (edge of edgeArr) {
+        if (edge !== BLANK)
+            pts--;
+    }
+    return pts;
 }
 
 function getDice(die, bonus, min) {
@@ -289,7 +308,7 @@ function getDice(die, bonus, min) {
 }
 
 function getMod(mod, bonus) {
-    if (mod == 0 && bonus == 0)
+    if (mod === 0 && bonus === 0)
         return;
     return mod + bonus;
 }
